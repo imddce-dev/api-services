@@ -1,0 +1,21 @@
+
+* text=auto
+*.js      text
+*.ts      text
+*.tsx     text
+*.css     text
+*.html    text
+*.json    text
+*.md      text
+*.mjs     text
+*.yaml    text
+*.yml     text
+.gitignore text
+
+*.sh      text eol=lf
+
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.lockb   binary

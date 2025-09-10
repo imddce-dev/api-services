@@ -15,3 +15,5 @@ export const create = async (db: DrizzleDB, data: { name: string; email: string 
   const newId = result[0].insertId;
   return { id: newId, ...data };
 };
+
+

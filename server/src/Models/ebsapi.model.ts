@@ -13,6 +13,8 @@ const ORDER_ALLOWLIST = new Set([
   'disease_name',
   'disease_group',
   'province_id',
+  'event_by_zone',
+  'event_by_province',
 ]);
 
 function rowsOf<T = any>(res: any): T[] {

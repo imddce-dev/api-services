@@ -36,7 +36,7 @@ const startup = async () => {
 startup();
 
 // 👇 สำคัญ: ให้ Bun เสิร์ฟ Hono ที่พอร์ตนี้
-const port = Number(process.env.SERVER_PORT || process.env.PORT || 8000);
+const port = Number(process.env.SERVER_PORT || process.env.PORT || 8080);
 export default {
   port,
   fetch: app.fetch,

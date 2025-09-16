@@ -12,6 +12,7 @@ services:
       - ./minio/data:/data
     networks:
       - backend
+    command: server /data --console-address ":9001"
 
   redis:
     image: redis:7.2.4

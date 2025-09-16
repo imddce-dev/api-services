@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  minio:
+    build: ./minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: "g0c;;myogs96dkiIN"
+    volumes:
+      - ./minio/data:/data
+    networks:
+      - backend
+
+  redis:
+    build: ./redis
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - backend
+
+  mariadb:
+    build: ./mariadb
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: "g0Uc;;myogs96dkiIN"
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+    networks:
+      - backend
+
+  # vault:
+  #   build: ./vault
+  #   container_name: vault
+  #   ports:
+  #     - "8200:8200"
+  #   cap_add:
+  #     - IPC_LOCK
+  #   environment:
+  #     VAULT_DEV_ROOT_TOKEN_ID: "root"
+  #   volumes:
+  #     - ./vault/file:/vault/file
+  #     - ./vault/config:/vault/config
+  #   networks:
+  #     - backend
+
+networks:
+  backend:
+    driver: bridge

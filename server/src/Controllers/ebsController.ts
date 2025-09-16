@@ -7,10 +7,15 @@ const BUCKET_MAP = {
   ebs_prov: 'fileebsprov',
 } as const;
 
+// mapping folder ถ้า DB มี field file_type
+const FOLDER_MAP = {
+  attachment: 'file_uploads',
+  excel: 'excel',
+  image: 'images',
+} as const;
+
 export const ebsRouter = new Hono();
 
-// GET /api/v1/:source
-// ตัวอย่าง: /api/v1/ebs?event_id=2
 ebsRouter.get('/:source', async (c) => {
   try {
     const source = c.req.param('source') || 'ebs';
@@ -33,28 +38,36 @@ ebsRouter.get('/:source', async (c) => {
 
     const bucket = BUCKET_MAP[source as keyof typeof BUCKET_MAP];
 
-    // สร้าง signed URL สำหรับแต่ละ item ตาม path ใน DB
+    // แก้ไขตรงนี้: เอา AAAS มาสร้าง URL
     for (const item of res.items) {
-      // สมมติ DB เก็บ path ไว้ใน field เช่น item.AAAS
-      const filePath: string = item.AAAS; 
-      if (filePath) {
-        // แยก folder กับ filename
-        const parts = filePath.replace(/^\/+/, '').split('/');
-        const folder = parts[0];              // file_uploads / excel / images
-        const filename = parts.slice(1).join('/'); // filename จริง
+      const aaFiles = item.AAAS as string | undefined;
+      if (aaFiles) {
+        const files: string[] = aaFiles.split(',').map(f => f.trim()).filter(Boolean);
+        const urls: (string | null)[] = [];
 
-        try {
-          item.file_url = await minioClient.presignedUrl(
-            'GET',
-            bucket,
-            `${folder}/${filename}`,
-            300 // 5 นาที
-          );
-        } catch {
-          item.file_url = null;
+        for (const f of files) {
+          // กำหนด folder ตามชื่อไฟล์
+          let folder = 'file_uploads'; // default
+          for (const key of Object.keys(FOLDER_MAP)) {
+            if (f.includes(FOLDER_MAP[key as keyof typeof FOLDER_MAP])) {
+              folder = FOLDER_MAP[key as keyof typeof FOLDER_MAP];
+              break;
+            }
+          }
+
+          let keyName = f.startsWith('/') ? f.slice(1) : f.startsWith(folder) ? f : `${folder}/${f}`;
+
+          try {
+            const url = await minioClient.presignedUrl('GET', bucket, keyName, 86400); // 1 วัน
+            urls.push(url);
+          } catch {
+            urls.push(null);
+          }
         }
+
+        item.file_url = urls;
       } else {
-        item.file_url = null;
+        item.file_url = [];
       }
     }
 
@@ -64,28 +77,21 @@ ebsRouter.get('/:source', async (c) => {
   }
 });
 
-// Endpoint สำหรับสร้าง signed URL แบบตรง ๆ
-// GET /api/v1/files-url/:bucket/:folder/:filename
+// Endpoint สำหรับดาวน์โหลดไฟล์ตรง ๆ
 ebsRouter.get('/files-url/:bucket/:folder/:filename', async (c) => {
   try {
-    const bucketParam = c.req.param('bucket');      // fileebs หรือ fileebsprov
-    const folder = c.req.param('folder');          // file_uploads, excel, images
+    const bucket = c.req.param('bucket');
+    const folder = c.req.param('folder');
     const filename = decodeURIComponent(c.req.param('filename'));
     const key = `${folder}/${filename}`;
 
-    // ตรวจสอบไฟล์
-    const objects = await minioClient.listObjectsV2(bucketParam, `${folder}/`, true);
-    const exists = await new Promise<boolean>((resolve) => {
-      let found = false;
-      objects.on('data', (obj) => { if (obj.name === key) found = true; });
-      objects.on('end', () => resolve(found));
-      objects.on('error', () => resolve(false));
-    });
+    try {
+      await minioClient.statObject(bucket, key);
+    } catch {
+      return c.json({ error: 'file not found in bucket' }, 404);
+    }
 
-    if (!exists) return c.json({ error: 'file not found in bucket' }, 404);
-
-    // สร้าง signed URL
-    const url = await minioClient.presignedUrl('GET', bucketParam, key, 24 * 60 * 60); // 24 ชม.
+    const url = await minioClient.presignedUrl('GET', bucket, key, 86400);
     return c.json({ url });
   } catch (e: any) {
     return c.json({ error: e?.message ?? 'error generating url' }, 500);

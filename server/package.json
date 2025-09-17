@@ -2,7 +2,7 @@
   "name": "server",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run server.ts"
+    "start": "bun run src/index.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.5",

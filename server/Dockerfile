@@ -4,7 +4,7 @@ FROM oven/bun:1.1.26 as base
 WORKDIR /app
 
 # คัดลอกไฟล์ dependencies
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 
 # ติดตั้ง dependencies
 RUN bun install

@@ -1,7 +1,11 @@
 #!/bin/sh
-# entrypoint.sh
+# รอให้ MariaDB พร้อม
+while ! nc -z mariadb 3306; do
+  echo "Waiting for mariadb..."
+  sleep 1
+done
 
-# ทำ migration แบบ non-interactive ด้วย --force
+# ทำ migration แบบ non-interactive
 bun drizzle-kit push --force
 
 # เริ่ม server

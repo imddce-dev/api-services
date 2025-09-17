@@ -2,7 +2,8 @@
 # entrypoint.sh
 
 # ทำ migration แบบ non-interactive
-bun drizzle-kit push --yes
+export DRIZZLE_NON_INTERACTIVE=1
+bun drizzle-kit push
 
 # เริ่ม server
 bun run src/index.ts

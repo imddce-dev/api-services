@@ -40,10 +40,10 @@ const port = Number(process.env.SERVER_PORT || process.env.PORT || 8080);
 
 console.log(`🚀 Server running on port ${port}`);
 
-Bun.serve({
-  port,
-  fetch: app.fetch,
-});
+// Bun.serve({
+//   port,
+//   fetch: app.fetch,
+// });
 
 export default {
   port,

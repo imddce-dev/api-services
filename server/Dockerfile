@@ -3,6 +3,9 @@ FROM oven/bun:1.1.26 as base
 
 WORKDIR /app
 
+# ติดตั้ง mysql-client
+RUN apt-get update && apt-get install -y default-mysql-client netcat && rm -rf /var/lib/apt/lists/*
+
 # คัดลอกไฟล์ dependencies
 COPY package.json bun.lock ./ 
 

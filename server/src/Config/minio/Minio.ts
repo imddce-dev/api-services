@@ -5,5 +5,5 @@ export const minioClient = new Client({
   port: 9000,
   useSSL: false,              // true ถ้า MinIO ใช้ HTTPS
   accessKey: 'admin',
-  secretKey: 'g0c;;myogs96dkiIN'
+  secretKey: 'g0Uc;;myogs96dkiIN'
 })

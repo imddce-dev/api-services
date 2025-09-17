@@ -46,6 +46,7 @@ services:
       DB_HOST: mariadb
       DB_USER: root
       DB_PASSWORD: "g0Uc;;myogs96dkiIN"
+      DB_DATABASE: ebs_api
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MINIO_ENDPOINT: http://minio:9000

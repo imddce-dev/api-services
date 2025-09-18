@@ -5,6 +5,7 @@ import { db } from './Config/mysql';
 import { DrizzleDB } from './Models/user.model';
 import { sql } from 'drizzle-orm';
 import * as userController from './Controllers/user.controller';
+import { uploadRouter } from './Controllers/upload.controller';
 
 type AppContext = {
   Variables: {
@@ -25,6 +26,7 @@ api.get('/users', userController.getAllUsers);
 api.post('/users', userController.createUser);
 app.get('/', (c) => c.text('API is running!'));
 api.route('/v1', ebsRouter);
+app.route('/upload', uploadRouter);
 
 // เช็ค DB
 (async () => {

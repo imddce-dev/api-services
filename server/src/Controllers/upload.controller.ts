@@ -3,7 +3,7 @@ import { minioClient } from '../Config/minio/Minio';
 
 export const uploadRouter = new Hono();
 
-uploadRouter.post('/', async (c) => {
+uploadRouter.post('/upload', async (c) => {
   try {
     const form = await c.req.formData();
     const file = form.get('file') as File;

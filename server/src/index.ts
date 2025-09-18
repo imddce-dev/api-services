@@ -26,7 +26,7 @@ api.get('/users', userController.getAllUsers);
 api.post('/users', userController.createUser);
 app.get('/', (c) => c.text('API is running!'));
 api.route('/v1', ebsRouter);
-app.route('/upload', uploadRouter);
+app.route('/', uploadRouter);
 
 // เช็ค DB
 (async () => {

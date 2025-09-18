@@ -56,11 +56,13 @@ ebsRouter.get('/:source', async (c) => {
           }
 
           let keyName = f.startsWith('/') ? f.slice(1) : f.startsWith(folder) ? f : `${folder}/${f}`;
+          console.log('bucket:', bucket, 'keyName:', keyName);
 
           try {
             const url = await minioClient.presignedUrl('GET', bucket, keyName, 86400); // 1 วัน
             urls.push(url);
-          } catch {
+          } catch (err: any) {
+            console.error('Error generating presignedUrl', err);
             urls.push(null);
           }
         }

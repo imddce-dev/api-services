@@ -1,6 +1,6 @@
 import { serve } from 'bun';
 import { Hono } from 'hono';
-import { ebsRouter } from './Controllers/ebsController';
+import { ebsRouter } from './Controllers/ebs.controller';
 import { db } from './Config/mysql';
 import { DrizzleDB } from './Models/user.model';
 import { sql } from 'drizzle-orm';

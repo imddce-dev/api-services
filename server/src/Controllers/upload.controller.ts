@@ -10,12 +10,18 @@ uploadRouter.post('/upload', async (c) => {
     const file = form.get('file') as any; // Bun File
     if (!file) return c.json({ error: 'No file provided' }, 400);
 
-    // แยกชื่อกับนามสกุลออกมา
+    // เอาชื่อไฟล์เดิมมาก่อน
     const originalName = file.name || file.filename || 'upload';
-    const ext = path.extname(originalName);        // เช่น ".docx"
-    const base = path.basename(originalName, ext); // เช่น "testupload"
+    let ext = path.extname(originalName);
 
-    // ต่อ timestamp กันซ้ำ
+    // fallback ถ้าไม่มีนามสกุล ให้เดาจาก mimetype
+    if (!ext && file.type) {
+      if (file.type.includes('wordprocessingml')) ext = '.docx';
+      else if (file.type === 'application/pdf') ext = '.pdf';
+      else if (file.type.startsWith('image/')) ext = '.' + file.type.split('/')[1];
+    }
+
+    const base = path.basename(originalName, ext) || 'upload';
     const filename = `${base}-${Date.now()}${ext}`;
 
     const buffer = await file.arrayBuffer();
@@ -23,11 +29,10 @@ uploadRouter.post('/upload', async (c) => {
     
     await minioClient.putObject('documents', key, Buffer.from(buffer));
 
-    // return c.json({ message: 'Upload successful', path: key });
     return c.json({ 
       message: 'Upload successful',
       path: key,
-      filename // ส่งคืนชื่อไฟล์ด้วย
+      filename
     });
   } catch (e: any) {
     return c.json({ error: e.message || 'Upload failed' }, 500);

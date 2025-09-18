@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1758170838190,
+      "tag": "0000_add_new_column_or_table",
+      "breakpoints": true
+    }
+  ]
+}

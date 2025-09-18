@@ -7,8 +7,11 @@ until mysqladmin ping -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" --silent; do
   sleep 2
 done
 
-# ทำ migration แบบ non-interactive
-bun drizzle-kit push 
+# ❌ ห้ามใช้ push แบบลบตาราง
+# bun drizzle-kit push
+
+# ✅ ใช้ incremental migration แทน (ถ้ามี)
+bun drizzle-kit migrate
 
 # เริ่ม server
 bun run src/index.ts

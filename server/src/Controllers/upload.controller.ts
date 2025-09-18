@@ -9,7 +9,7 @@ uploadRouter.post('/upload', async (c) => {
     const file = form.get('file') as any; // Bun File
     if (!file) return c.json({ error: 'No file provided' }, 400);
 
-    const filename = file.filename || 'unknown';
+    const filename = file.name || file.filename || 'upload-' + Date.now();
     const buffer = await file.arrayBuffer();
     const key = `file_uploads/${filename}`;
     

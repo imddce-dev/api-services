@@ -1,7 +1,8 @@
 import { serve } from 'bun';
 import { Hono } from 'hono';
 import { ebsRouter } from './Controllers/ebs.controller';
-import { db } from './Config/mysql';
+import { mebsRouter } from './Controllers/mebs.controller';
+import { db, dbMEBS } from './Config/mysql';
 import { DrizzleDB } from './Models/user.model';
 import { sql } from 'drizzle-orm';
 import * as userController from './Controllers/user.controller';
@@ -26,15 +27,18 @@ api.get('/users', userController.getAllUsers);
 api.post('/users', userController.createUser);
 app.get('/', (c) => c.text('API is running!'));
 api.route('/v1', ebsRouter);
+api.route('/v2/mebs', mebsRouter);
 app.route('/', uploadRouter);
 
 // เช็ค DB
 (async () => {
   try {
     await db.execute(sql`select 1`);
-    console.log('✅ Database connection successfully.');
+    console.log('✅ EBS DB ok');
+    await dbMEBS.execute(sql`select 1`);
+    console.log('✅ MEBS DB ok');
   } catch (err) {
-    console.error('❌ Could not connect to the database:', err);
+    console.error('❌ DB check failed:', err);
     process.exit(1);
   }
 })();

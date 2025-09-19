@@ -59,6 +59,42 @@ services:
     networks:
       - backend
 
+  npm-db:
+    image: mariadb:11.4
+    container_name: npm-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: npm_root_pass
+      MYSQL_DATABASE: npm
+      MYSQL_USER: npm
+      MYSQL_PASSWORD: npm_pass
+    volumes:
+      - ./npm/data:/var/lib/mysql
+    networks:
+      - backend
+
+  nginxproxymanager:
+    image: jc21/nginx-proxy-manager:2.12.2
+    container_name: nginxproxymanager
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    environment:
+      DB_MYSQL_HOST: npm-db
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: npm
+      DB_MYSQL_PASSWORD: npm_pass
+      DB_MYSQL_NAME: npm
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - npm-db
+    networks:
+      - backend
+
 # vault:
 #   image: hashicorp/vault:1.18.1
 #   container_name: vault

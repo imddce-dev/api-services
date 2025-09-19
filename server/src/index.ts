@@ -7,6 +7,7 @@ import { DrizzleDB } from './Models/user.model';
 import { sql } from 'drizzle-orm';
 import * as userController from './Controllers/user.controller';
 import { uploadRouter } from './Controllers/upload.controller';
+import { apiKeyAuth } from './Middleware/apikey';
 
 type AppContext = {
   Variables: {
@@ -16,11 +17,13 @@ type AppContext = {
 
 const app = new Hono<AppContext>();
 
-// set db
-app.use('*', async (c, next) => {
-  c.set('db', db);
-  await next();
-});
+app.get('/healthz', (c) => c.text('ok'));
+// ✅ ใส่ middleware ตรงนี้ (ครอบทุก /api/*)
+app.use('/api/*', apiKeyAuth({
+  headerName: 'apikey',
+  allowQueryParam: true,     // ปิดได้ถ้าอยากบังคับ header เท่านั้น
+  // publicPaths: [/^\/api\/public/], // ถ้ามี public api
+}));
 
 const api = app.basePath('/api');
 api.get('/users', userController.getAllUsers);

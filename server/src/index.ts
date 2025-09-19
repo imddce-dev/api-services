@@ -8,6 +8,7 @@ import { sql } from 'drizzle-orm';
 import * as userController from './Controllers/user.controller';
 import { uploadRouter } from './Controllers/upload.controller';
 import { apiKeyAuth } from './Middleware/apikey';
+import { downloadRouter } from './Controllers/download.controller';
 
 type AppContext = {
   Variables: {
@@ -32,6 +33,7 @@ app.get('/', (c) => c.text('API is running!'));
 api.route('/v1', ebsRouter);
 api.route('/v2/mebs', mebsRouter);
 app.route('/', uploadRouter);
+app.route('/', downloadRouter);
 
 // เช็ค DB
 (async () => {

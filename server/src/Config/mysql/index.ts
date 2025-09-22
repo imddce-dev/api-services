@@ -32,3 +32,16 @@ const poolMEBS = mysql.createPool({
 });
 
 export const dbMEBS = drizzle(poolMEBS, { schema, mode: 'default' });
+
+const poolAPI = mysql.createPool({
+  host: process.env.DB_HOST_API,
+  user: process.env.DB_USERNAME_API || process.env.DB_USER,
+  password: process.env.DB_PASSWORD_API,
+  database: process.env.DB_DATABASE_API,
+  port: Number(process.env.DB_PORT || 3306),
+  charset: 'utf8mb4',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+export const dbAPI = drizzle(poolAPI, { schema, mode: 'default' });

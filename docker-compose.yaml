@@ -42,7 +42,7 @@ services:
     ports:
       - "3000:8080"
     env_file:
-      - .env 
+      - ./server/.env 
     depends_on:
       - mariadb
     networks:

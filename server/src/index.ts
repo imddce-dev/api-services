@@ -23,7 +23,7 @@ app.get('/healthz', (c) => c.text('ok'));
 app.use('/api/*', apiKeyAuth({
   clientHeader: 'x-client-key',
   secretHeader: 'x-secret-key',
-  allowQueryParam: true,    // ✅ แนะนำปิด ไม่ให้ส่ง key ผ่าน query string
+  allowQueryParam: false,    // ✅ แนะนำปิด ไม่ให้ส่ง key ผ่าน query string
   // publicPaths: [/^\/api\/public/], // ถ้ามี API ที่ไม่ต้องตรวจ key
 }));
 

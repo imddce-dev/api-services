@@ -1,4 +1,4 @@
-import { minioClient } from '../Config/minio/Minio';
+import { minioClient } from '../Config/minio';
 
 // list ไฟล์ทั้งหมดใต้ prefix (เช่น 'form/' หรือ '' เพื่อทั้ง bucket)
 export async function listKeys(bucket: string, prefix = ''): Promise<string[]> {

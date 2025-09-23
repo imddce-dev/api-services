@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { ebsRouter } from './Controllers/ebs.controller';
 import { mebsRouter } from './Controllers/mebs.controller';
 import { db, dbMEBS, dbAPI } from './Config/mysql';
+import { minioClient, MINIO_BUCKETS } from './Config/minio';
 import { DrizzleDB } from './Models/user.model';
 import { sql } from 'drizzle-orm';
 import * as userController from './Controllers/user.controller';
@@ -23,7 +24,7 @@ app.get('/healthz', (c) => c.text('ok'));
 app.use('/api/*', apiKeyAuth({
   clientHeader: 'x-client-key',
   secretHeader: 'x-secret-key',
-  allowQueryParam: false,    // ✅ แนะนำปิด ไม่ให้ส่ง key ผ่าน query string
+  allowQueryParam: true,    // ✅ แนะนำปิด ไม่ให้ส่ง key ผ่าน query string
   // publicPaths: [/^\/api\/public/], // ถ้ามี API ที่ไม่ต้องตรวจ key
 }));
 
@@ -45,6 +46,13 @@ app.route('/', downloadRouter);
     console.log('✅ MEBS DB ok');
     await dbAPI.execute(sql`select 1`);
     console.log('✅ API Service DB ok');
+  try {
+      const buckets = await minioClient.listBuckets();
+      console.log('✅ MinIO ok, buckets:', buckets.map(b => b.name).join(', ') || '(none)');
+    } catch (e: any) {
+      console.error('⚠️ MinIO check failed:', e.code || e.message);
+      // ไม่ kill โปรเซส เพื่อให้ API อื่นๆ ใช้ได้
+    }
   } catch (err) {
     console.error('❌ DB check failed:', err);
     process.exit(1);

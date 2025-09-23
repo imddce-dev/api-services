@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { findEbs } from '../Models/ebsapi.model';
-import { minioClient } from '../Config/minio/Minio';
+import { minioClient } from '../Config/minio';
 
 const BUCKET_MAP = {
   ebs: 'fileebs',
@@ -22,6 +22,7 @@ ebsRouter.get('/:source', async (c) => {
     const qs = c.req.query();
 
     const res = await findEbs({
+      ctx: c,
       source,
       filters: {
         event_id: qs.event_id,

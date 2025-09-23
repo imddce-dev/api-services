@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { minioClient } from '../Config/minio/Minio';
+import { minioClient } from '../Config/minio';
 import * as path from 'path';
 
 export const uploadRouter = new Hono();

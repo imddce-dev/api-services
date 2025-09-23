@@ -41,21 +41,10 @@ services:
     container_name: backend
     ports:
       - "3000:8080"
-    environment:
-      NODE_ENV: production
-      DB_HOST: mariadb
-      DB_USER: root
-      DB_PASSWORD: "g0Uc;;myogs96dkiIN"
-      DB_DATABASE: ebs_api
-      REDIS_HOST: 192.168.110.7
-      REDIS_PORT: 6379
-      MINIO_ENDPOINT: http://192.168.130.10:9000
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: "g0Uc;;myogs96dkiIN"
+    env_file:
+      - .env 
     depends_on:
       - mariadb
-      # - redis
-      # - minio
     networks:
       - backend
 

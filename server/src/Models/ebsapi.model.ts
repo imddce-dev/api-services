@@ -89,7 +89,6 @@ export async function findEbs(params: {
   const whereSql = sql`WHERE ${sql.join(wh, sql` AND `)}`;
   const tableSql = sql.raw('`' + table + '`');
 
-  // สำหรับ EXTERNAL: เลือกเฉพาะคอลัมน์ปลอดภัย
   const externalColumns = [
     'event_id',
     'event_notifier_date',

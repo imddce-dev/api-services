@@ -38,13 +38,14 @@ ebsRouter.get('/:source', async (c) => {
     });
 
     const bucket = BUCKET_MAP[source as keyof typeof BUCKET_MAP];
+    const DOMAIN = "https://ebs-api-ddce.ddc.moph.go.th";
 
-    // แก้ไขตรงนี้: เอา AAAS มาสร้าง URL
+    // เอา AAAS มาสร้าง Static URL
     for (const item of res.items) {
       const aaFiles = item.AAAS as string | undefined;
       if (aaFiles) {
         const files: string[] = aaFiles.split(',').map(f => f.trim()).filter(Boolean);
-        const urls: (string | null)[] = [];
+        const urls: string[] = [];
 
         for (const f of files) {
           // กำหนด folder ตามชื่อไฟล์
@@ -56,16 +57,13 @@ ebsRouter.get('/:source', async (c) => {
             }
           }
 
+          // ทำ keyName ให้ตรงกับ path จริงใน bucket
           let keyName = f.startsWith('/') ? f.slice(1) : f.startsWith(folder) ? f : `${folder}/${f}`;
           console.log('bucket:', bucket, 'keyName:', keyName);
 
-          try {
-            const url = await minioClient.presignedUrl('GET', bucket, keyName, 86400); // 1 วัน
-            urls.push(url);
-          } catch (err: any) {
-            console.error('Error generating presignedUrl', err);
-            urls.push(null);
-          }
+          // ✅ ใช้ Static URL (ผ่าน nginx proxy manager)
+          const url = `${DOMAIN}/${bucket}/${keyName}`;
+          urls.push(url);
         }
 
         item.file_url = urls;
@@ -79,6 +77,7 @@ ebsRouter.get('/:source', async (c) => {
     return c.json({ error: e?.message ?? 'query failed' }, 400);
   }
 });
+
 
 // Endpoint สำหรับดาวน์โหลดไฟล์ตรง ๆ
 ebsRouter.get('/files-url/:bucket/:folder/:filename', async (c) => {

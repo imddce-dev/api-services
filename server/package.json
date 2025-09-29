@@ -1,13 +1,13 @@
 {
   "name": "server",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun --watch src/index.ts",
     "start": "bun run src/index.ts"
   },
   "dependencies": {
     "archiver": "^7.0.1",
     "drizzle-orm": "^0.44.5",
-    "hono": "^4.9.6",
+    "hono": "^4.9.9",
     "jszip": "^3.10.1",
     "minio": "^8.0.6",
     "mysql2": "^3.14.5"

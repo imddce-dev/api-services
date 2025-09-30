@@ -24,7 +24,7 @@ function rowsOf<T = any>(res: any): T[] {
 }
 
 export async function findEbs(params: {
-  ctx?: Context; // ← สำคัญ: เอาไว้อ่าน actor.scope
+  ctx?: Context; 
   source: string;
   filters: {
     event_id?: string;

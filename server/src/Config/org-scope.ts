@@ -105,7 +105,7 @@ export const ORGANIZER_TO_ODPC: Record<number,
   'ODPC07'|'ODPC08'|'ODPC09'|'ODPC10'|'ODPC11'|'ODPC12'|'ODPC13'
 > = {
   77: 'ODPC01',
-  78: 'ODPC02',
+  //78: 'ODPC02',
   79: 'ODPC03',
   80: 'ODPC04',
   81: 'ODPC05',
@@ -139,7 +139,7 @@ export function resolveScope(organizer?: number): OrgScope {
     return { type: 'ODPC', odpc: ORGANIZER_TO_ODPC[organizer] };
   }
   // ส่วนกลาง (ช่วง 1-20)
-  if (organizer >= 107 && organizer <= 117) {
+  if (organizer >= 107 && organizer <= 117 || organizer === 78) {
     return { type: 'CENTRAL' };
   }
   // ภายนอก

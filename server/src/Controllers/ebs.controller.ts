@@ -38,7 +38,7 @@ ebsRouter.get('/:source', async (c) => {
     });
 
     const bucket = BUCKET_MAP[source as keyof typeof BUCKET_MAP];
-    const DOMAIN = "https://ebs-api-ddce.ddc.moph.go.th";
+    const DOMAIN = "https://api-service-ddce.ddc.moph.go.th";
 
     // เอา AAAS มาสร้าง Static URL
     for (const item of res.items) {
